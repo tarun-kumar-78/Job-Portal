@@ -9,7 +9,7 @@ import About from "./About";
 import CompanyJobs from "./CompanyJobs";
 import CompanyEmployee from "./CompanyEmployee";
 
-const Company = () => {
+const Company = (props: any) => {
   return (
     <div className="w-9/12 px-3">
       <div className="relative">
@@ -46,7 +46,7 @@ const Company = () => {
               <Tabs.Tab value="Employees">Employees</Tabs.Tab>
             </Tabs.List>
             <Tabs.Panel value="About">
-              <About />
+              <About {...props} />
             </Tabs.Panel>
 
             <Tabs.Panel value="Jobs">

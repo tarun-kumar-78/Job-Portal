@@ -16,6 +16,7 @@ import {
   errorNotification,
   successNotification,
 } from "../Services/NotificationService";
+import { getBase64 } from "../Services/Utitlity";
 
 const UserProfile = () => {
   const user = useSelector((state: any) => state.user);
@@ -36,15 +37,6 @@ const UserProfile = () => {
         console.log(err);
         errorNotification("Failed", "Failed to update profile picture");
       });
-  };
-
-  const getBase64 = (file: any) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = () => reject(reader.error);
-    });
   };
 
   // API Call

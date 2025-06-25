@@ -23,11 +23,20 @@ const getAllJobs = async () => {
 
 const getJob = async (id: Number) => {
   return axios
-    .get(`${BASE_URL}/${id}`)
-    .then((res) => console.log(res.data))
+    .get(`${BASE_URL}/get/${id}`)
+    .then((res) => res.data)
     .catch((err) => {
       throw err;
     });
 };
 
-export { postJob, getAllJobs, getJob };
+const applyJob = async (id: number, applicant: any) => {
+  return axios
+    .post(`${BASE_URL}/apply/${id}`, applicant)
+    .then((res) => res.data)
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export { postJob, getAllJobs, getJob, applyJob };

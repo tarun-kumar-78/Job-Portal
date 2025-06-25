@@ -29,7 +29,7 @@ const ProfileMenu = () => {
 
   // Fetch user data from store
   const user = useSelector((state: any) => state.user);
-  console.log(user);
+  // console.log(user);
 
   return (
     <Menu shadow="md" width={200} onChange={setOpened} opened={opened}>

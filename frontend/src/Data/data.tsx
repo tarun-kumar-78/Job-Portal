@@ -757,21 +757,25 @@ export const card = [
     name: "Location",
     icon: IconMapPin,
     value: "New York",
+    id: "location",
   },
   {
     name: "Experience",
     icon: IconBriefcase,
     value: "Expert",
+    id: "experience",
   },
   {
     name: "Salary",
     icon: IconPremiumRights,
     value: "45 LPA",
+    id: "packageOffered",
   },
   {
     name: "Job Type",
     icon: IconRecharging,
     value: "Full Time",
+    id: "jobType",
   },
 ];
 

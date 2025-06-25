@@ -1,12 +1,28 @@
 import { Tabs } from "@mantine/core";
 import { jobs } from "../Data/data";
 import Card from "./Card";
+import { useEffect, useState } from "react";
+import { getAllJobs } from "../Services/PostJobService";
 
 const JobHistory = () => {
+  const [];
+  const [jobList, setJobList] = useState<any>();
+
+  useEffect(() => {
+    getAllJobs()
+      .then((res) => {
+        console.log(res);
+        setJobList(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
     <div>
       <div className="text-2xl font-semibold py-2">Job History</div>
-      <Tabs defaultValue="About" className="[&_button]:text-lg font-semibold">
+      <Tabs defaultValue="applied" className="[&_button]:text-lg font-semibold">
         <Tabs.List>
           <Tabs.Tab value="applied">Applied</Tabs.Tab>
           <Tabs.Tab value="saved">Saved</Tabs.Tab>

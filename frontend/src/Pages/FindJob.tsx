@@ -9,9 +9,10 @@ const FindJob = () => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getAllJobs()
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         setData(res);
       })
       .catch((err) => console.log(err));

@@ -1,45 +1,100 @@
-import { IconBookmark } from "@tabler/icons-react";
+import { IconBookmark, IconBookmarkFilled } from "@tabler/icons-react";
 // import Meta from "../assets/Company/Meta.png";
 import { ActionIcon, Button, Divider } from "@mantine/core";
 import { Link } from "react-router-dom";
-import { card, desc, skills } from "../Data/data";
+import { card } from "../Data/data";
 import DOMPurify from "dompurify";
+import { timeAgo } from "../Services/Utitlity";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfile } from "../Slices/ProfileSlice";
+import { updateProfile } from "../Services/ProfileService";
+import { getItem } from "../Services/LocalStorageService";
+import { useEffect, useState } from "react";
 
 const JobDesc = (props: any) => {
-  const data = DOMPurify.sanitize(desc);
+  const data = DOMPurify.sanitize(props.description);
   window.scrollTo({ top: 0, behavior: "smooth" });
+  const dispatch = useDispatch();
+  const profile = useSelector((state: any) => state.profile);
+  const user = getItem("user");
+  const [applied, setApplied] = useState(false);
+
+  // console.log(user);
+  useEffect(() => {
+    let applicantId = props.applicant.filter(
+      (job: any) => job.applicantId === user.id
+    ).length;
+    // console.log(applicantId);
+    if (applicantId > 0) setApplied(true);
+    else setApplied(false);
+  }, [props]);
+
+  const handleSavedJobs = () => {
+    let savedJobs = [...profile.savedJobs];
+    if (savedJobs?.includes(props.id))
+      savedJobs = savedJobs?.filter((id: any) => id !== props.id);
+    else {
+      savedJobs = [...savedJobs, props.id];
+    }
+    let updatedProfile = { ...profile, savedJobs: savedJobs };
+    dispatch(setProfile(updatedProfile));
+    updateProfile(updatedProfile)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div className="w-2/3 p-3">
       <div className="flex justify-between items-center">
         <div className="flex gap-4 items-center">
           <div>
             <img
-              src={`/Company/Adobe.png`}
+              src={`/Company/${props.company}.png`}
               className="h-14 bg-mine-shaft-700 p-3 rounded-xl"
-              alt="Meta"
+              alt={props.company}
             />
           </div>
           <div className="">
             <div className="text-2xl text-mine-shaft-300 font-semibold">
-              Product Engineer
+              {props.title}
             </div>
             <div className="text-lg text-mine-shaft-400">
-              Meta &bull; 3 days ago &bull; 20 Applicants
+              {props.company} &bull; {timeAgo(props.postTime)} &bull;{" "}
+              {props.applicant ? props.applicant.length : 0} Applicant
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 items-center">
-          <Link to="/apply-job">
+          {applied && (
+            <Button color="green.8" variant="light" size="sm">
+              Applied
+            </Button>
+          )}
+
+          <Link to={`/apply-job/${props.id}`}>
             <Button color="brightSun.4" variant="light" size="sm">
-              {props.edit ? "Edit" : "Apply"}
+              {props.edit && applied ? "Edit" : "Apply"}
             </Button>
           </Link>
+
           {props.edit ? (
             <Button color="red.5" variant="light">
               Delete
             </Button>
+          ) : profile.savedJobs?.includes(props.id) ? (
+            <IconBookmarkFilled
+              onClick={handleSavedJobs}
+              className=" w-5 h-5 text-bright-sun-400"
+            />
           ) : (
-            <IconBookmark className="w-5 h-5 text-bright-sun-400" />
+            <IconBookmark
+              onClick={handleSavedJobs}
+              className="w-5 h-5 text-mine-shaft-300"
+            />
           )}
         </div>
       </div>
@@ -57,7 +112,13 @@ const JobDesc = (props: any) => {
               <item.icon className="h-4/5 w-4/5" />
             </ActionIcon>
             <div className="text-sm text-mine-shaft-300">{item.name}</div>
-            <div className="font-semibold">{item.value}</div>
+            <div className="font-semibold">
+              {item.id != "packageOffered"
+                ? props
+                  ? props[item.id]
+                  : "NA"
+                : props[item.id] + " LPA"}
+            </div>
           </div>
         ))}
       </div>
@@ -65,7 +126,7 @@ const JobDesc = (props: any) => {
       <div>
         <div className="text-xl font-semibold mb-5">Required Skills</div>
         <div className="flex gap-2 flex-wrap">
-          {skills.map((skill, index) => (
+          {props.skills?.map((skill: any, index: number) => (
             <ActionIcon
               key={index}
               variant="light"
@@ -94,20 +155,20 @@ const JobDesc = (props: any) => {
             <div className="flex gap-4 items-center">
               <div>
                 <img
-                  src={`/public/Company/Meta.png`}
+                  src={`/Company/${props.company}.png`}
                   className="h-14 bg-mine-shaft-700 p-3 rounded-xl"
                   alt="Meta"
                 />
               </div>
               <div>
                 <div className="text-2xl text-mine-shaft-300 font-semibold">
-                  Meta
+                  {props.company}
                 </div>
                 <div className="text-sm text-mine-shaft-400">10K+ Employee</div>
               </div>
             </div>
             <div className="flex flex-col gap-2 items-center">
-              <Link to="/company">
+              <Link to={`/company/${props.company}`}>
                 <Button color="brightSun.4" variant="light" size="sm">
                   Company Page
                 </Button>

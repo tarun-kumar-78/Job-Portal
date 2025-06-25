@@ -1,6 +1,6 @@
 import { companyData } from "../Data/data";
 
-const About = () => {
+const About = (props: any) => {
   const company: { [key: string]: any } = companyData;
   return (
     <div className="flex flex-col gap-5 py-2">

@@ -1,24 +1,40 @@
 import { Button, Divider } from "@mantine/core";
 import { IconArrowLeft } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ApplyJob from "../ApplyJob/ApplyJob";
+import { useEffect, useState } from "react";
+import { getJob } from "../Services/PostJobService";
 
 const ApplyJobPage = () => {
+  const { id } = useParams();
+  const [jobData, setJobData] = useState<any>();
+  const jobId = Number(id);
+  const navigate = useNavigate();
+  useEffect(() => {
+    getJob(jobId)
+      .then((res) => setJobData(res))
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
   return (
     <div className="min-h-[100vh] bg-mine-shaft-950 font-['Poppins']">
       <Divider size="xs" mx="md" />
-      <Link to="/jobs" className="my-4 inline-block mx-4">
-        <Button
-          color="brightSun.4"
-          variant="light"
-          leftSection={<IconArrowLeft />}
-          size="sm"
-        >
-          Back
-        </Button>
-      </Link>
+
+      <Button
+        onClick={() => navigate(-1)}
+        color="brightSun.4"
+        variant="light"
+        leftSection={<IconArrowLeft />}
+        size="sm"
+        my="md"
+        mx="md"
+      >
+        Back
+      </Button>
+
       <div>
-        <ApplyJob />
+        <ApplyJob {...jobData} />
       </div>
     </div>
   );
