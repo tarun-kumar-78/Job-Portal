@@ -5,34 +5,65 @@ import {
   IconCalendarMonth,
   IconClockHour3,
 } from "@tabler/icons-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { timeAgo } from "../Services/Utitlity";
+import { useDispatch, useSelector } from "react-redux";
+import { setProfile } from "../Slices/ProfileSlice";
+import { updateProfile } from "../Services/ProfileService";
 
 const Card = (props: any) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const profile = useSelector((state: any) => state.profile);
+
+  const handleSavedJobs = () => {
+    let savedJobs = [...profile.savedJobs];
+    if (savedJobs?.includes(props.id))
+      savedJobs = savedJobs?.filter((id: any) => id !== props.id);
+    else {
+      savedJobs = [...savedJobs, props.id];
+    }
+    let updatedProfile = { ...profile, savedJobs: savedJobs };
+    dispatch(setProfile(updatedProfile));
+    updateProfile(updatedProfile)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
-    <Link
-      to="/jobs"
-      className="w-80 p-4 flex flex-col gap-4 rounded-xl bg-mine-shaft-900 cursor-pointer hover:shadow-[0_0_5px_1px] !shadow-bright-sun-400"
-    >
+    <div className="w-80 p-4 flex flex-col gap-4 rounded-xl bg-mine-shaft-900 cursor-pointer hover:shadow-[0_0_5px_1px] !shadow-bright-sun-400">
       <div className="flex justify-between">
         <div className="flex gap-4 items-center">
           <div>
             <img
-              src={props.company}
+              src={`/Company/${props.company}.png`}
               className="w-10 bg-mine-shaft-700 p-1 rounded-md"
               alt="Meta"
             />
           </div>
           <div className="">
-            <div className="text-lg text-mine-shaft-300 font-semibold">
-              {props.title}
-            </div>
+            <Link to="/jobs">
+              <div className="text-lg text-mine-shaft-300 font-semibold">
+                {props.title}
+              </div>
+            </Link>
           </div>
         </div>
         <div>
-          {!props.saved ? (
-            <IconBookmark className="w-5 h-5 text-mine-shaft-300" />
+          {profile.savedJobs?.includes(props.id) ? (
+            <IconBookmarkFilled
+              onClick={handleSavedJobs}
+              className=" w-5 h-5 text-bright-sun-400"
+            />
           ) : (
-            <IconBookmarkFilled className="w-5 h-5 text-bright-sun-400" />
+            <IconBookmark
+              onClick={handleSavedJobs}
+              className="w-5 h-5 text-mine-shaft-300"
+            />
           )}
         </div>
       </div>
@@ -48,7 +79,9 @@ const Card = (props: any) => {
       </div>
       <Divider size="xs" color="mineShaft.7" />
       <div className="flex justify-between text-xs">
-        <div className="text-sm font-semibold">&#8377; 24 LPA</div>
+        <div className="text-sm font-semibold">
+          &#8377; {props.packageOffered} LPA
+        </div>
         <div className="flex gap-1 text-mine-shaft-500 items-center">
           <IconClockHour3 className="w-5 h-5" />
 
@@ -57,7 +90,7 @@ const Card = (props: any) => {
             : props.offered
             ? "Interview "
             : "Posted "}
-          {props.postedDaysAgo}
+          {timeAgo(props.postTime)}
         </div>
       </div>
       {props.offered ||
@@ -80,7 +113,14 @@ const Card = (props: any) => {
           <span className="text-mine-shaft-400">10:00 AM</span>
         </div>
       )}
-    </Link>
+      <Button
+        variant="light"
+        className="!text-bright-sun-400 "
+        onClick={() => navigate(`/jobs/${props.id}`)}
+      >
+        View Job
+      </Button>
+    </div>
   );
 };
 

@@ -13,7 +13,7 @@ const FindJob = () => {
     getAllJobs()
       .then((res) => {
         // console.log(res);
-        setData(res);
+        setData(res.filter((job: any) => job.status == "ACTIVE"));
       })
       .catch((err) => console.log(err));
   }, []);

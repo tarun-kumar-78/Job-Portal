@@ -21,7 +21,7 @@ const JobDesc = (props: any) => {
 
   // console.log(user);
   useEffect(() => {
-    let applicantId = props.applicant.filter(
+    let applicantId = props.applicant?.filter(
       (job: any) => job.applicantId === user.id
     ).length;
     // console.log(applicantId);
@@ -69,32 +69,34 @@ const JobDesc = (props: any) => {
           </div>
         </div>
         <div className="flex flex-col gap-2 items-center">
-          {applied && (
+          {applied ? (
             <Button color="green.8" variant="light" size="sm">
               Applied
             </Button>
-          )}
-
-          <Link to={`/apply-job/${props.id}`}>
-            <Button color="brightSun.4" variant="light" size="sm">
-              {props.edit && applied ? "Edit" : "Apply"}
-            </Button>
-          </Link>
-
-          {props.edit ? (
-            <Button color="red.5" variant="light">
-              Delete
-            </Button>
-          ) : profile.savedJobs?.includes(props.id) ? (
-            <IconBookmarkFilled
-              onClick={handleSavedJobs}
-              className=" w-5 h-5 text-bright-sun-400"
-            />
           ) : (
-            <IconBookmark
-              onClick={handleSavedJobs}
-              className="w-5 h-5 text-mine-shaft-300"
-            />
+            <>
+              <Link to={`/apply-job/${props.id}`}>
+                <Button color="brightSun.4" variant="light" size="sm">
+                  {props.edit && applied ? "Edit" : "Apply"}
+                </Button>
+              </Link>
+
+              {props.edit ? (
+                <Button color="red.5" variant="light">
+                  Delete
+                </Button>
+              ) : profile.savedJobs?.includes(props.id) ? (
+                <IconBookmarkFilled
+                  onClick={handleSavedJobs}
+                  className=" w-5 h-5 text-bright-sun-400"
+                />
+              ) : (
+                <IconBookmark
+                  onClick={handleSavedJobs}
+                  className="w-5 h-5 text-mine-shaft-300"
+                />
+              )}
+            </>
           )}
         </div>
       </div>

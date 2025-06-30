@@ -10,7 +10,7 @@ const RecommendedJobs = () => {
   useEffect(() => {
     getAllJobs()
       .then((res) => {
-        setJobList(res);
+        setJobList(res?.filter((job: any) => job.status == "ACTIVE"));
       })
       .catch((err) => {
         console.log(err);

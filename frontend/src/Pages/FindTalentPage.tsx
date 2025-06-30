@@ -12,7 +12,7 @@ const FindTalentPage = () => {
       <Divider size="xs" mx="md" />
       <Talents />
       <div className="mt-8 flex gap-5 flex-wrap px-40">
-        {talent.map((talent, index) => (
+        {talent?.map((talent, index) => (
           <TalentCard key={index} {...talent} />
         ))}
       </div>

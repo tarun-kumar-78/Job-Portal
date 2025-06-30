@@ -47,3 +47,37 @@ export const getBase64 = (file: any) => {
     reader.onerror = () => reject(reader.error);
   });
 };
+
+export const formatInterviewDate = (interviewDate: any) => {
+  const date = new Date(interviewDate);
+  return date.toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+};
+
+export function showPdfFromBase64(base64String: string) {
+  // Decode the Base64 string into a byte array
+  console.log(base64String);
+  const byteCharacters = atob(base64String);
+
+  const byteNumbers = new Array(byteCharacters.length);
+
+  for (let i = 0; i < byteCharacters.length; i++) {
+    byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+
+  // Create a Blob from the byte array
+  const blob = new Blob([byteArray], { type: "application/pdf" });
+
+  // Generate a URL for the Blob
+  const url = URL.createObjectURL(blob);
+
+  // Open the PDF in a new tab
+  window.open(url, "_blank");
+}
