@@ -15,6 +15,9 @@ const Card = (props: any) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const profile = useSelector((state: any) => state.profile);
+  const stripHtml = (desc: any) => {
+    return desc.replace(/<[^>]*>?/gm, "");
+  };
 
   const handleSavedJobs = () => {
     let savedJobs = [...profile.savedJobs];
@@ -74,7 +77,7 @@ const Card = (props: any) => {
       </div>
       <div>
         <Text lineClamp={2} className="!text-xs text-justify">
-          {props.description}
+          {stripHtml(props.description)}
         </Text>
       </div>
       <Divider size="xs" color="mineShaft.7" />

@@ -5,13 +5,14 @@ import { useDisclosure } from "@mantine/hooks";
 import { DatePickerInput, TimeInput } from "@mantine/dates";
 import { useEffect, useRef, useState } from "react";
 import avater from "./../assets/avatar2.jpg";
-import { getProfile } from "../Services/ProfileService";
 import { changeJobStatus } from "../Services/PostJobService";
 import {
   errorNotification,
   successNotification,
 } from "../Services/NotificationService";
 import { formatInterviewDate, showPdfFromBase64 } from "../Services/Utitlity";
+import { getProfile } from "../Services/ProfileService";
+
 const TalentCard = (props: any) => {
   const [opened, { open, close }] = useDisclosure(false);
   const [app, { open: openApp, close: closeApp }] = useDisclosure(false);
@@ -23,7 +24,7 @@ const TalentCard = (props: any) => {
 
   const sheduleInterview = (status: string) => {
     let interview: any = {
-      id: id,
+      id: Number(id),
       applicantId: profile.id,
       applicationStatus: status,
     };
@@ -56,7 +57,8 @@ const TalentCard = (props: any) => {
   };
 
   useEffect(() => {
-    if (props.applicantId)
+    window.scrollTo(0, 0);
+    if (props.applicantId) {
       getProfile(props.applicantId)
         .then((res) => {
           setProfile(res);
@@ -64,7 +66,9 @@ const TalentCard = (props: any) => {
         .catch((err) => {
           console.log(err);
         });
-  }, [props]);
+    }
+  }, [props.applicantId]);
+
   return (
     <div className="w-96 p-4 flex flex-col gap-4 justify-between rounded-xl bg-mine-shaft-900 cursor-pointer hover:shadow-[0_0_5px_1px] !shadow-bright-sun-400">
       <div className="flex justify-between">
@@ -72,8 +76,12 @@ const TalentCard = (props: any) => {
           <div>
             <Avatar
               src={
-                profile?.picture
-                  ? `data:image/jpeg;base64, ${profile?.picture}`
+                profile
+                  ? profile?.picture
+                    ? `data:image/jpeg;base64,${profile.picture}`
+                    : avater
+                  : props.picture
+                  ? `data:image/jpeg;base64,${props.picture}`
                   : avater
               }
               size="lg"
@@ -86,7 +94,8 @@ const TalentCard = (props: any) => {
               {props.name}
             </div>
             <div className="text-xs text-mine-shaft-300">
-              {profile?.jobTitle} &bull; {profile?.company}
+              {profile ? profile.jobTitle : props?.jobTitle} &bull;{" "}
+              {profile ? profile.location : props?.location}
             </div>
           </div>
         </div>
@@ -95,13 +104,17 @@ const TalentCard = (props: any) => {
         </div>
       </div>
       <div className="flex gap-2 [&>div]:bg-mine-shaft-800 [&>div]:rounded-md [&>div]:w-fit [&>div]:py-1 [&>div]:px-2 [&>div]:text-bright-sun-400 [&>div]:text-xs">
-        {profile?.skills?.map((skill: any, index: number) => (
-          <div key={index}>{skill}</div>
-        ))}
+        {profile
+          ? profile?.skills?.map((skill: any, index: number) => (
+              <div key={index}>{skill}</div>
+            ))
+          : props.skills?.map((skill: any, index: number) => (
+              <div key={index}>{skill}</div>
+            ))}
       </div>
       <div>
         <Text lineClamp={2} className="!text-xs text-justify">
-          {profile?.about}
+          {profile ? profile?.about : props.about}
         </Text>
       </div>
       <Divider size="xs" color="mineShaft.7" />
@@ -112,10 +125,20 @@ const TalentCard = (props: any) => {
         </div>
       ) : (
         <div className="flex justify-between text-xs">
-          <div className="text-sm font-semibold">&#8377;{23} LPA</div>
+          <div className="text-sm font-semibold">
+            Exp{" "}
+            {profile
+              ? profile.exp
+                ? profile.exp
+                : 1
+              : props.exp
+              ? props.exp
+              : 1}{" "}
+            Year{props.exp > 1 ? "s" : ""}
+          </div>
           <div className="flex gap-1 text-mine-shaft-500 items-center">
             <IconMapPin className="w-5 h-5" />
-            {profile?.location}
+            {profile ? profile.location : props.location}
           </div>
         </div>
       )}
@@ -124,7 +147,7 @@ const TalentCard = (props: any) => {
 
       {!props?.invited && (
         <div className="flex [&>*]:w-1/2 [&>*]:p-1">
-          <Link to={`/talent-profile/${profile?.id}`}>
+          <Link to={`/talent-profile/${profile ? profile.id : props.id}`}>
             <Button color="brightSun.4" fullWidth variant="variant">
               Profile
             </Button>

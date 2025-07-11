@@ -1,3 +1,5 @@
+import { formatDate } from "../Services/Utitlity";
+
 // import Meta from "../assets/Company/Meta.png";
 const CertiCard = (props: any) => {
   return (
@@ -6,19 +8,19 @@ const CertiCard = (props: any) => {
         <div className="flex gap-4 items-center">
           <div>
             <img
-              src={"/public/Company/${props.issuer}"}
+              src={`/Company/${props.issuer}.png`}
               className="w-10 bg-mine-shaft-700 p-1 rounded-md"
               alt="Meta"
             />
           </div>
           <div className="">
-            <div className="font-semibold text-lg">{props.name}</div>
-            <div className="text-sm text-mine-shaft-300">Meta</div>
+            <div className="font-semibold text-lg">{props.title}</div>
+            <div className="text-sm text-mine-shaft-300">{props.issuer}</div>
           </div>
         </div>
         <div className="text-sm text-mine-shaft-300 flex flex-col items-end">
-          <div>{props.issueDate}</div>
-          <div>{props.certificateId}</div>
+          <div>{formatDate(props.issueDate)}</div>
+          <div>{props.certificationId}</div>
         </div>
       </div>
     </div>

@@ -39,7 +39,7 @@ const ExperienceCard = (props: any) => {
             <div className="flex gap-4 items-center">
               <div>
                 <img
-                  src={`/public/Company/${props.company}`}
+                  src={`/Company/${props.company}.png`}
                   className="w-10 bg-mine-shaft-700 p-1 rounded-md"
                   alt="Meta"
                 />

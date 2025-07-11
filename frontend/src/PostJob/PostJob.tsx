@@ -3,18 +3,38 @@ import { content, fields } from "../Data/data";
 import SelectInput from "./SelectInput";
 import RichText from "./RichText";
 import { isNotEmpty, useForm } from "@mantine/form";
-import { postJob } from "../Services/PostJobService";
+import { getJob, postJob } from "../Services/PostJobService";
 import {
   errorNotification,
   successNotification,
 } from "../Services/NotificationService";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
+import { useEffect, useState } from "react";
 
 const PostJob = () => {
+  const { id } = useParams();
   const select = fields;
   const navigate = useNavigate();
   const profile = useSelector((state: any) => state.profile);
+  const [editorData, setEditorData] = useState(content);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    if (id !== "0") {
+      getJob(Number(id))
+        .then((res) => {
+          form.setValues(res);
+          setEditorData(res.description);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      form.reset();
+      setEditorData(content);
+    }
+  }, [id]);
 
   const form = useForm({
     mode: "controlled",
@@ -49,7 +69,12 @@ const PostJob = () => {
     form.validate();
     if (!form.isValid()) return;
     // console.log(form.getValues());
-    postJob({ ...form.getValues(), postedBy: profile.id, status: "ACTIVE" })
+    postJob({
+      ...form.getValues(),
+      id: id,
+      postedBy: profile.id,
+      status: "ACTIVE",
+    })
       .then((res) => {
         console.log(res);
         successNotification("Success", "Job Posted Successfully");
@@ -62,7 +87,12 @@ const PostJob = () => {
   };
 
   const handleDraftJob = () => {
-    postJob({ ...form.getValues(), postedBy: profile.id, status: "DRAFT" })
+    postJob({
+      ...form.getValues(),
+      id: id,
+      postedBy: profile.id,
+      status: "DRAFT",
+    })
       .then((res) => {
         console.log(res);
         successNotification("Success", "Job Drafted Successfully");
@@ -114,7 +144,7 @@ const PostJob = () => {
           <div className="text-sm font-medium">
             Job Description <span className="text-red-500">*</span>
           </div>
-          <RichText form={form} />
+          <RichText form={form} data={editorData} />
         </div>
         <div className="flex gap-3">
           <Button

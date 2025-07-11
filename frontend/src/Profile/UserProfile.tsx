@@ -74,12 +74,12 @@ const UserProfile = () => {
               className="!rounded-full"
             />
           )}
-          {hovered && <IconEdit className="absolute z-[300] w-16 h-16" />}
+          {hovered && <IconEdit className="absolute z-[200] w-16 h-16" />}
           {hovered && (
             <FileInput
               onChange={handleFileChange}
               accept="image/png,image/jpeg"
-              className="absolute w-full [&_*]:!h-full !h-full z-[301] [&_*]:!rounded-full"
+              className="absolute w-full [&_*]:!h-full !h-full z-[201] [&_*]:!rounded-full"
               variant="transparent"
             />
           )}

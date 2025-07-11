@@ -1,3 +1,5 @@
+import { formatDate } from "../Services/Utitlity";
+
 const ExperienceCard = (props: any) => {
   console.log(props);
   return (
@@ -19,7 +21,7 @@ const ExperienceCard = (props: any) => {
           </div>
         </div>
         <div className="text-sm text-mine-shaft-300">
-          {props.startDate} - {props.endDate}
+          {formatDate(props.startDate)} - {formatDate(props.endDate)}
         </div>
       </div>
       <div className="text-sm text-mine-shaft-300 text-justify">

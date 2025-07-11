@@ -10,6 +10,11 @@ import { setProfile } from "../Slices/ProfileSlice";
 import { updateProfile } from "../Services/ProfileService";
 import { getItem } from "../Services/LocalStorageService";
 import { useEffect, useState } from "react";
+import { postJob } from "../Services/PostJobService";
+import {
+  errorNotification,
+  successNotification,
+} from "../Services/NotificationService";
 
 const JobDesc = (props: any) => {
   const data = DOMPurify.sanitize(props.description);
@@ -18,6 +23,7 @@ const JobDesc = (props: any) => {
   const profile = useSelector((state: any) => state.profile);
   const user = getItem("user");
   const [applied, setApplied] = useState(false);
+  console.log(props);
 
   // console.log(user);
   useEffect(() => {
@@ -47,6 +53,18 @@ const JobDesc = (props: any) => {
       });
   };
 
+  const handleCloseJob = () => {
+    postJob({ ...props, status: "CLOSED" })
+      .then((res) => {
+        console.log(res);
+        successNotification("Success", "Job Closed Successfully");
+      })
+      .catch((err) => {
+        console.log(err);
+        errorNotification("Error", err.response.data.errorMessage);
+      });
+  };
+
   return (
     <div className="w-2/3 p-3">
       <div className="flex justify-between items-center">
@@ -69,35 +87,33 @@ const JobDesc = (props: any) => {
           </div>
         </div>
         <div className="flex flex-col gap-2 items-center">
-          {applied ? (
-            <Button color="green.8" variant="light" size="sm">
-              Applied
-            </Button>
-          ) : (
-            <>
-              <Link to={`/apply-job/${props.id}`}>
-                <Button color="brightSun.4" variant="light" size="sm">
-                  {props.edit && applied ? "Edit" : "Apply"}
-                </Button>
-              </Link>
+          <>
+            <Link
+              to={
+                props.edit ? `/post-jobs/${props.id}` : `/apply-job/${props.id}`
+              }
+            >
+              <Button color="brightSun.4" variant="light" size="sm">
+                {props.closed ? "Reopen" : props.edit ? "Edit" : "Apply"}
+              </Button>
+            </Link>
 
-              {props.edit ? (
-                <Button color="red.5" variant="light">
-                  Delete
-                </Button>
-              ) : profile.savedJobs?.includes(props.id) ? (
-                <IconBookmarkFilled
-                  onClick={handleSavedJobs}
-                  className=" w-5 h-5 text-bright-sun-400"
-                />
-              ) : (
-                <IconBookmark
-                  onClick={handleSavedJobs}
-                  className="w-5 h-5 text-mine-shaft-300"
-                />
-              )}
-            </>
-          )}
+            {props.edit && !props.closed ? (
+              <Button color="red.5" variant="light" onClick={handleCloseJob}>
+                Close
+              </Button>
+            ) : profile.savedJobs?.includes(props.id) ? (
+              <IconBookmarkFilled
+                onClick={handleSavedJobs}
+                className=" w-5 h-5 text-bright-sun-400"
+              />
+            ) : (
+              <IconBookmark
+                onClick={handleSavedJobs}
+                className="w-5 h-5 text-mine-shaft-300"
+              />
+            )}
+          </>
         </div>
       </div>
       <Divider my="xl" />

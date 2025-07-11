@@ -7,16 +7,19 @@ import {
   PillsInput,
   useCombobox,
 } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { updateFilter } from "../Slices/FilterSlice";
 
-const MultiInput = (prop: any) => {
+const MultiInput = (props: any) => {
   const [search, setSearch] = useState("");
   const [data, setData] = useState<string[]>([]);
   const [value, setValue] = useState<string[]>([]);
+  const dispatch = useDispatch();
 
-  useState(() => {
-    setData(prop.options);
-  });
+  useEffect(() => {
+    setData(props.options);
+  }, []);
 
   const combobox = useCombobox({
     onDropdownClose: () => combobox.resetSelectedOption(),
@@ -29,18 +32,26 @@ const MultiInput = (prop: any) => {
     if (val === "$create") {
       setData((current) => [...current, search]);
       setValue((current) => [...current, search]);
+      dispatch(updateFilter({ [props.title]: [...value, search] }));
     } else {
       setValue((current) =>
         current.includes(val)
           ? current.filter((v) => v !== val)
           : [...current, val]
       );
+      dispatch(
+        updateFilter({
+          [props.title]: value.includes(val)
+            ? value.filter((v) => v !== val)
+            : [...value, val],
+        })
+      );
     }
   };
-
-  const handleValueRemove = (val: string) =>
+  const handleValueRemove = (val: string) => {
     setValue((current) => current.filter((v) => v !== val));
-
+    dispatch(updateFilter({ [props.title]: value.filter((v) => v !== val) }));
+  };
   const values = value.slice(0, 1).map((item) => (
     <Pill key={item} withRemoveButton onRemove={() => handleValueRemove(item)}>
       {item}
@@ -74,11 +85,11 @@ const MultiInput = (prop: any) => {
         <PillsInput
           onClick={() => combobox.toggleDropdown()}
           variant="unstyled"
-          className="bg-mine-shaft-900 rounded-md px-1"
+          className="bg-mine-shaft-900 rounded-md px-1 [&_*]:font-['poppins']"
           rightSection={<Combobox.Chevron />}
           leftSection={
             <div className="text-bright-sun-400 p-1 bg-mine-shaft-900 rounded-full mr-2">
-              {prop.icon}
+              {props.icon}
             </div>
           }
         >
@@ -90,7 +101,7 @@ const MultiInput = (prop: any) => {
               </>
             ) : (
               <Input.Placeholder color="mineShaft.3">
-                {prop.title}
+                {props.title}
               </Input.Placeholder>
             )}
 
@@ -128,7 +139,7 @@ const MultiInput = (prop: any) => {
         <Combobox.Search
           value={search}
           onChange={(event) => setSearch(event.currentTarget.value)}
-          placeholder={prop.title}
+          placeholder={props.title}
         />
         <Combobox.Options>
           {options.length > 0 ? (
@@ -141,5 +152,4 @@ const MultiInput = (prop: any) => {
     </Combobox>
   );
 };
-
 export default MultiInput;

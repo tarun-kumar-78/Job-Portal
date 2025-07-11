@@ -15,6 +15,10 @@ const JobCard = (props: any) => {
   const profile = useSelector((state: any) => state.profile);
   const dispatch = useDispatch();
 
+  const stripHtml = (desc: any) => {
+    return desc.replace(/<[^>]*>?/gm, "");
+  };
+
   const handleSavedJobs = () => {
     let savedJobs = [...profile.savedJobs];
     if (savedJobs?.includes(props.id))
@@ -72,7 +76,7 @@ const JobCard = (props: any) => {
       </div>
       <div>
         <Text lineClamp={2} className="!text-xs text-justify">
-          {props.description}
+          {stripHtml(props.description)}
         </Text>
       </div>
       <Divider size="xs" color="mineShaft.7" />

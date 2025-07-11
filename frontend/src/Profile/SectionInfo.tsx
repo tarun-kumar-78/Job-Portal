@@ -1,4 +1,4 @@
-import { ActionIcon } from "@mantine/core";
+import { ActionIcon, NumberInput } from "@mantine/core";
 import {
   IconBriefcase,
   IconCheck,
@@ -29,6 +29,7 @@ const SectionInfo = (props: any) => {
         jobTitle: profile.jobTitle,
         company: profile.company,
         location: profile.location,
+        exp: profile.exp,
       });
     } else {
       setEdit(false);
@@ -36,6 +37,7 @@ const SectionInfo = (props: any) => {
   };
 
   const handleSave = () => {
+    console.log(form.getValues());
     let updatedProfile = { ...profile, ...form.getValues() };
     // console.log(updatedProfile);
     dispatch(setProfile(updatedProfile));
@@ -52,7 +54,7 @@ const SectionInfo = (props: any) => {
 
   const form = useForm({
     mode: "controlled",
-    initialValues: { jobTitle: "", company: "", location: "" },
+    initialValues: { jobTitle: "", company: "", location: "", exp: 0 },
   });
 
   return (
@@ -84,6 +86,10 @@ const SectionInfo = (props: any) => {
           <div className="text-lg flex gap-1 items-center text-mine-shaft-400">
             <IconMapPin className="h-5 w-5" /> {props.location}
           </div>
+          <div className="text-lg flex gap-1 items-center text-mine-shaft-400">
+            <IconBriefcase className="h-5 w-5" /> {props.exp}
+            {props.exp > 1 ? " Years" : " Year"}
+          </div>
         </>
       ) : (
         <>
@@ -91,8 +97,19 @@ const SectionInfo = (props: any) => {
             <SelectInput form={form} name="jobTitle" {...select[0]} />
             <SelectInput form={form} name="company" {...select[2]} />
           </div>
-          <div className="mb-3">
+          <div className="flex gap-10 [&>*]:w-1/2 my-3">
             <SelectInput form={form} name="location" {...select[1]} />
+            <NumberInput
+              label="Experience"
+              withAsterisk
+              hideControls
+              clampBehavior="strict"
+              min={0}
+              max={60}
+              placeholder="Enter Experience"
+              className="[&_input]:font-['poppins']"
+              {...form.getInputProps("exp")}
+            />
           </div>
         </>
       )}

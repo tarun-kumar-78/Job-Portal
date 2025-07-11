@@ -8,20 +8,17 @@ import {
   errorNotification,
   successNotification,
 } from "../Services/NotificationService";
-import { useState } from "react";
 
 const CertiInput = (props: any) => {
   const profile = useSelector((state: any) => state.profile);
   const dispatch = useDispatch();
-  const [issueDate, setIssueDate] = useState<any>();
-
   const form = useForm({
     mode: "controlled",
     validateInputOnChange: true,
     initialValues: {
       title: "",
       issuer: "",
-      issueDate: "",
+      issueDate: null,
       certificationId: "",
     },
     validate: {
@@ -34,7 +31,12 @@ const CertiInput = (props: any) => {
 
   const handleSave = () => {
     form.validate();
-    if (!form.isValid()) return;
+    if (!form.isValid()) {
+      console.log("Invalid");
+      console.log(form.getValues());
+      return;
+    }
+    console.log(form.getValues());
     let exp = [...profile.certifications];
     exp.push(form.getValues());
     console.log(exp);
@@ -79,8 +81,7 @@ const CertiInput = (props: any) => {
           placeholder="Enter issue date"
           withAsterisk
           maxDate={new Date()}
-          onChange={setIssueDate}
-          value={issueDate}
+          {...form.getInputProps("issueDate")}
         />
         <TextInput
           label="Certificate ID"

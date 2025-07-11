@@ -1,6 +1,11 @@
 import { notifications } from "@mantine/notifications";
 import { IconCheck, IconX } from "@tabler/icons-react";
 
+import axios from "axios";
+
+// Base URL
+const BASE_URL = "http://localhost:8080/notification";
+
 const successNotification = (title: string, message: string) => {
   notifications.show({
     title: title,
@@ -25,4 +30,13 @@ const errorNotification = (title: string, message: string) => {
   });
 };
 
-export { successNotification, errorNotification };
+const getAllNotifications = async (userId: number) => {
+  return axios
+    .get(`${BASE_URL}/get/${userId}`)
+    .then((res) => res.data)
+    .catch((err) => {
+      throw err;
+    });
+};
+
+export { successNotification, errorNotification, getAllNotifications };

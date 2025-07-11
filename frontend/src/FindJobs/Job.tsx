@@ -5,7 +5,7 @@ const Job = () => {
     <div className="flex justify-between py-5 px-4">
       <div>Recommended Jobs</div>
       <div>
-        <Sort />
+        <Sort job={"job"} />
       </div>
     </div>
   );

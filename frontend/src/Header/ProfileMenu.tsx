@@ -27,15 +27,10 @@ const ProfileMenu = () => {
     navigate("/");
   };
 
-  // Fetch user data from store
-  const user = useSelector((state: any) => state.user);
-  // console.log(user);
-
   return (
     <Menu shadow="md" width={200} onChange={setOpened} opened={opened}>
       <Menu.Target>
         <div className="flex items-center gap-2 cursor-pointer">
-          <div>{user.name}</div>
           <Avatar
             src={
               profile.picture
